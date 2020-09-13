@@ -6,10 +6,12 @@ import numpy as np
 def my_strategy_sell_option_call_spread_premium(price_sell_call, price_buy_call):
     premium = (price_sell_call - price_buy_call)
     return premium
+
 def my_strategy_sell_option_put_spread_premium(price_sell_put, price_buy_put):
     premium = (price_sell_put - price_buy_put)
     return premium
 # def for pl of spreads
+
 def my_strategy_sell_option_call_spread_PL(call_prem_sell, call_prem_buy,theoretical_spot_rate_expiration, quantity, sell_call_strike, buy_call_strike):
     if theoretical_spot_rate_expiration == sell_call_strike or theoretical_spot_rate_expiration < sell_call_strike:
         pl = my_strategy_sell_option_call_spread_premium(call_prem_sell, call_prem_buy) * quantity
@@ -19,6 +21,7 @@ def my_strategy_sell_option_call_spread_PL(call_prem_sell, call_prem_buy,theoret
         pl = my_strategy_sell_option_call_spread_premium(call_prem_sell, call_prem_buy) * quantity + ((sell_call_strike * 1000 - theoretical_spot_rate_expiration * 1000) * quantity)
 
     return pl
+
 def my_strategy_sell_option_put_spread_PL(put_prem_sell, put_prem_buy, theoretical_spot_rate_expiration, quantity, sell_put_strike, buy_put_strike):
     if theoretical_spot_rate_expiration == sell_put_strike or theoretical_spot_rate_expiration > sell_put_strike:
         pl = my_strategy_sell_option_put_spread_premium(put_prem_sell, put_prem_buy) * quantity
@@ -27,6 +30,7 @@ def my_strategy_sell_option_put_spread_PL(put_prem_sell, put_prem_buy, theoretic
     elif theoretical_spot_rate_expiration < sell_put_strike and theoretical_spot_rate_expiration > buy_put_strike:
         pl = my_strategy_sell_option_call_spread_premium(put_prem_sell, put_prem_buy) * quantity + ((theoretical_spot_rate_expiration * 1000 - sell_put_strike * 1000) * quantity)
     return pl
+
 # tech def for np.array of strikes
 def strike(first_strike, second_strike):
     strikes = []
@@ -34,6 +38,7 @@ def strike(first_strike, second_strike):
         theoretical_fx_rates =  np.round(i, 2)
         strikes.append(theoretical_fx_rates)
     return strikes
+
 # def for pl for graph
 def pl(first_strike, second_strike):
     df = []
