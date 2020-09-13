@@ -10,8 +10,8 @@ def my_strategy_sell_option_call_spread_premium(price_sell_call, price_buy_call)
 def my_strategy_sell_option_put_spread_premium(price_sell_put, price_buy_put):
     premium = (price_sell_put - price_buy_put)
     return premium
-# def for pl of spreads
 
+# def for pl of spreads
 def my_strategy_sell_option_call_spread_PL(call_prem_sell, call_prem_buy,theoretical_spot_rate_expiration, quantity, sell_call_strike, buy_call_strike):
     if theoretical_spot_rate_expiration == sell_call_strike or theoretical_spot_rate_expiration < sell_call_strike:
         pl = my_strategy_sell_option_call_spread_premium(call_prem_sell, call_prem_buy) * quantity
@@ -40,13 +40,15 @@ def strike(first_strike, second_strike):
     return strikes
 
 # def for pl for graph
-def pl(first_strike, second_strike):
+def pl(first_strike, second_strike, put_prem_sell, put_prem_buy, quantity, sell_put_strike,
+       buy_put_strike, call_prem_sell, call_prem_buy, sell_call_strike, buy_call_strike):
     df = []
     for theoretical_fx_rate in strike(first_strike, second_strike):
-        df.append({'strike': theoretical_fx_rate, 'PL': my_strategy_sell_option_put_spread_PL(put_prem_sell=423, put_prem_buy=287, theoretical_spot_rate_expiration=theoretical_fx_rate,
-                                                                                               quantity=15, sell_put_strike=75, buy_put_strike=74.5) +
-                                                        my_strategy_sell_option_call_spread_PL(call_prem_sell=423, call_prem_buy=287, theoretical_spot_rate_expiration=theoretical_fx_rate,
-                                                                                               quantity=15, sell_call_strike=76, buy_call_strike=76.5)})
+        df.append({'strike': theoretical_fx_rate,
+                   'PL': my_strategy_sell_option_put_spread_PL(put_prem_sell=put_prem_sell, put_prem_buy=put_prem_buy, theoretical_spot_rate_expiration=theoretical_fx_rate,
+                                                                                               quantity=quantity, sell_put_strike=sell_put_strike, buy_put_strike=buy_put_strike) +
+                    my_strategy_sell_option_call_spread_PL(call_prem_sell=call_prem_sell, call_prem_buy=call_prem_buy, theoretical_spot_rate_expiration=theoretical_fx_rate,
+                                                                                               quantity=quantity, sell_call_strike=sell_call_strike, buy_call_strike=buy_call_strike)})
     df = pd.DataFrame(df)
     df = df[['strike', 'PL']]
     return df
@@ -59,8 +61,27 @@ end_strike = 82
 step = 1
 
 
-strikes_for_graph = pl(start_strike, end_strike)['strike']
-pl_for_graph = pl(start_strike, end_strike)['PL']
+sell_call_strike = 76
+call_prem_sell = 423
+buy_call_strike = 76.5
+call_prem_buy = 287
+
+sell_put_strike = 75
+put_prem_sell = 423
+buy_put_strike = 74.5
+put_prem_buy = 287
+
+
+
+quantity = 15
+
+
+
+
+strikes_for_graph = pl(start_strike, end_strike, put_prem_sell, put_prem_buy, quantity, sell_put_strike,
+       buy_put_strike, call_prem_sell, call_prem_buy, sell_call_strike, buy_call_strike)['strike']
+pl_for_graph = pl(start_strike, end_strike, put_prem_sell, put_prem_buy, quantity, sell_put_strike,
+       buy_put_strike, call_prem_sell, call_prem_buy, sell_call_strike, buy_call_strike)['PL']
 plt.plot(strikes_for_graph, pl_for_graph)
 plt.xticks(np.arange(start_strike, end_strike, step))
 plt.ylabel('P&L')
