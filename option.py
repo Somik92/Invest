@@ -2,6 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+
+
+
 # def for net premium of spreads
 def my_strategy_sell_option_call_spread_premium(price_sell_call, price_buy_call):
     premium = (price_sell_call - price_buy_call)
